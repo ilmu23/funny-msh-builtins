@@ -6,16 +6,15 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/02 00:12:32 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/01/02 02:09:46 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/01/08 00:22:29 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "funny.h"
 
-static char	**ft_splitn(const char *s, size_t n);
 static char	*getmsg(void);
 static char	*ft_chrtostr(char c, size_t n);
-static void	ft_putbubble(char **msg);
+static void	ft_putbubble(char *msg);
 
 void	ft_putcow(const char *msg)
 {
@@ -23,33 +22,8 @@ void	ft_putcow(const char *msg)
 		msg = getmsg();
 	if (!msg)
 		return ;
-	ft_putbubble(ft_pusharr(ft_splitn(msg, 42)));
+	ft_putbubble(ft_push((char *)msg));
 	ft_printf("%s%s%s%s%s", COW1, COW2, COW3, COW4, COW5);
-}
-
-static char	**ft_splitn(const char *s, size_t n)
-{
-	size_t	i;
-	size_t	start;
-	size_t	asize;
-	char	**out;
-
-	asize = ((ft_strlen(s) - 1) / n) + 2;
-	out = ft_push(ft_calloc(asize, sizeof(char *)));
-	if (!out)
-		return (NULL);
-	i = 0;
-	start = 0;
-	while (i < asize - 1)
-	{
-		out[i] = ft_push(ft_substr(s, start, n));
-		if (!out[i++])
-			return (NULL);
-		start += n;
-	}
-	ft_popn(asize);
-	out[i] = NULL;
-	return (out);
 }
 
 static char	*getmsg(void)
@@ -82,27 +56,36 @@ static char	*ft_chrtostr(char c, size_t n)
 	return (out);
 }
 
-static void	ft_putbubble(char **msg)
+static int	ft_min(int a, int b)
 {
-	size_t	i;
-	size_t	len;
-	char	*edge;
+	if (a < b)
+		return (a);
+	return (b);
+}
+
+static void	ft_putbubble(char *msg)
+{
+	size_t		i;
+	size_t		len;
+	size_t		blen;
+	const char	edge[4][2] = {"<>", "/\\", "||", "\\/"};
 
 	i = 0;
-	len = ft_strlen(msg[i]);
-	ft_printf(" %s\n", ft_chrtostr('_', len + 2));
-	while (msg[i])
+	len = ft_strlen(msg);
+	blen = ft_min(len, 42);
+	ft_printf(" %s\n", ft_chrtostr('_', blen + 2));
+	while (*msg)
 	{
-		if (!msg[i + 1] && i == 0)
-			edge = ft_strdup("<>");
-		else if (!msg[i + 1])
-			edge = ft_strdup("\\/");
-		else if (i == 0)
-			edge = ft_strdup("/\\");
-		else
-			edge = ft_strdup("||");
-		ft_printf("%c %-*s %c\n", edge[0], len, msg[i++], edge[1]);
+		if (len > 42 && i == 0)
+			i++;
+		else if (len > 42 && i == 1)
+			i++;
+		else if (len <= 42 && i != 0)
+			i = 3;
+		ft_printf("%c %-*.*s %c\n", edge[i][0], blen,
+			ft_min(len, 42), msg, edge[i][1]);
+		msg = msg + ft_min(len, blen);
+		len = ft_strlen(msg);
 	}
-	ft_printf(" %s\n", ft_chrtostr('-', len + 2));
-	ft_popn(i);
+	ft_printf(" %s\n", ft_chrtostr('-', blen + 2));
 }
