@@ -6,7 +6,7 @@
 /*   By: ivalimak <ivalimak@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/02 00:12:32 by ivalimak          #+#    #+#             */
-/*   Updated: 2024/01/08 00:22:29 by ivalimak         ###   ########.fr       */
+/*   Updated: 2024/03/16 10:10:47 by ivalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,15 @@ static char	*getmsg(void);
 static char	*ft_chrtostr(char c, size_t n);
 static void	ft_putbubble(char *msg);
 
-void	ft_putcow(const char *msg)
+int	ft_putcow(const char *msg)
 {
 	if (!msg)
 		msg = getmsg();
 	if (!msg)
-		return ;
+		return (1);
 	ft_putbubble(ft_push((char *)msg));
 	ft_printf("%s%s%s%s%s", COW1, COW2, COW3, COW4, COW5);
+	return (0);
 }
 
 static char	*getmsg(void)
@@ -37,6 +38,7 @@ static char	*getmsg(void)
 		tmp = ft_strtrim(get_next_line(0), "\n");
 		if (!tmp)
 			break ;
+	//	ft_pop();
 		msg = ft_push(ft_strsjoin(msg, tmp, ' '));
 	}
 	return (msg);
